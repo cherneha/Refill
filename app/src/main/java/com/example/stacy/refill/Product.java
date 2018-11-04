@@ -20,6 +20,14 @@ public class Product {
 
     private double lastUpdateQuantity;
 
+    public Product(String name, double currentQuantity){
+        this.name = name;
+        this.currentQuantity = currentQuantity;
+        this.lastUpdateQuantity = currentQuantity;
+        this.dailyUpdate = 0;
+        this.lastUpdate = new Date();
+    }
+
     public String getName() {
         return name;
     }
