@@ -1,11 +1,13 @@
 package com.example.stacy.refill;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity
+@Entity(indices = {@Index(value = "name", unique = true)})
+
 public class Product {
     @PrimaryKey(autoGenerate = true)
     private long id;
