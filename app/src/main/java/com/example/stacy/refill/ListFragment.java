@@ -1,5 +1,7 @@
 package com.example.stacy.refill;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -23,26 +25,48 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class ListFragment extends Fragment {
     LinearLayout listOfProducts;
-
+    AppDatabase db;
+    ProductDao productDao;
+    SyncProductDao syncProductDao;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         listOfProducts = view.findViewById(R.id.product_list);
         LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linLayoutParam.gravity = Gravity.CENTER_HORIZONTAL;
-        for (int i = 0; i < 3; i++) {
-            addBlock("Olive Oil", "1.2");
+
+        db = Database.getInstance(getActivity().getApplicationContext()).getAppDatabase();
+        productDao = db.productDao();
+        syncProductDao = new SyncProductDao(productDao);
+
+//        syncProductDao.insertAll(
+//                new Product("Lime", 3),
+//                new Product("Milk", 3.7),
+//                new Product("Bread", 1),
+//                new Product("Coffee", 5.6),
+//                new Product("Salt", 8),
+//                new Product("Water", 2.3),
+//                new Product("Tea", 1.7));
+
+        List<Product> products = syncProductDao.getAll();
+
+        for (int i = 0; i < products.size(); i++) {
+            System.out.println(products.get(i).getName());
+            addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()));
         }
         return view;
     }
 
-    public void addBlock(String inputName, String productQuantity) {
+    public void addBlock(final String inputName, String productQuantity) {
 
-        LinearLayout block = new LinearLayout(getActivity().getApplicationContext());
+        final LinearLayout block = new LinearLayout(getActivity().getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         if (Build.VERSION.SDK_INT > 15) {
@@ -58,7 +82,7 @@ public class ListFragment extends Fragment {
         params.setMargins(8, 8, 8, 0);
         block.setLayoutParams(params);
 
-        LinearLayout nameLayout = new LinearLayout(getActivity().getApplicationContext());
+        final LinearLayout nameLayout = new LinearLayout(getActivity().getApplicationContext());
         nameLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         if (Build.VERSION.SDK_INT > 15) {
@@ -70,7 +94,7 @@ public class ListFragment extends Fragment {
             nameLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
 
-        ImageButton editButton = new ImageButton(getActivity().getApplicationContext());
+        final ImageButton editButton = new ImageButton(getActivity().getApplicationContext());
         if (Build.VERSION.SDK_INT > 15) {
             Drawable editIcon = getActivity().getResources().getDrawable(R.drawable.edit);
             editIcon.setBounds(0, 0, 50, 50);
@@ -79,11 +103,6 @@ public class ListFragment extends Fragment {
         } else {
             editButton.setBackgroundColor(Color.parseColor("#FF9800"));
         }
-        editButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Do something in response to button click
-            }
-        });
 
         ImageButton deleteButton = new ImageButton(getActivity().getApplicationContext());
         if (Build.VERSION.SDK_INT > 15) {
@@ -95,8 +114,9 @@ public class ListFragment extends Fragment {
         }
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                // Do something in response to button click
+                syncProductDao.delete(syncProductDao.findByName(inputName));
+                listOfProducts.removeView(block);
+                return;
             }
         });
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(80, 80);
@@ -105,7 +125,7 @@ public class ListFragment extends Fragment {
 
         LinearLayout.LayoutParams buttonParams2 = new LinearLayout.LayoutParams(80, 80);
         buttonParams2.setMargins(650, 0, 0, 0);
-        editButton.setLayoutParams(buttonParams2);
+//        editButton.setLayoutParams(buttonParams2);
 
 
 //        Button menuButton = new Button(getActivity().getApplicationContext());
@@ -121,7 +141,7 @@ public class ListFragment extends Fragment {
 //        menuButton.setGravity(Gravity.RIGHT);
 
 
-        TextView text = new TextView(getActivity().getApplicationContext());
+        final TextView text = new TextView(getActivity().getApplicationContext());
         text.setText(inputName);
         text.setPadding(8, 8, 8, 8);
         text.setTextSize(20);
@@ -133,9 +153,46 @@ public class ListFragment extends Fragment {
         nameLayout.addView(editButton);
         nameLayout.addView(deleteButton);
         block.addView(nameLayout);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                alert.setTitle("Rename Product");
+                alert.setMessage(inputName);
+
+                final EditText input = new EditText(getContext());
+                alert.setView(input);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Product edited = syncProductDao.findByName(inputName);
+                        edited.setName(String.valueOf(input.getText()));
+                        syncProductDao.updateProduct(edited);
+
+                        text.setText(String.valueOf(input.getText()));
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+        });
+
 
         LinearLayout quantityLayout = new LinearLayout(getActivity().getApplicationContext());
         quantityLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+
+        final TextView quantity = new TextView(getActivity().getApplicationContext());
+        quantity.setText(productQuantity);
+        quantity.setTextSize(30);
+        quantity.setPadding(16, 8, 16, 0);
+        quantityLayout.addView(quantity);
 
         ImageButton addButton = new ImageButton(getActivity().getApplicationContext());
         if (Build.VERSION.SDK_INT > 15) {
@@ -147,20 +204,39 @@ public class ListFragment extends Fragment {
         }
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Do something in response to button click
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                alert.setTitle("Add");
+                alert.setMessage("How much?");
+
+                final EditText input = new EditText(getContext());
+                alert.setView(input);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Product edited = syncProductDao.findByName(inputName);
+                        double newValue = Double.valueOf(String.valueOf(input.getText()))
+                                + edited.getCurrentQuantity();
+                        edited.setCurrentQuantity(newValue);
+                        syncProductDao.updateProduct(edited);
+
+                        quantity.setText(String.valueOf(newValue));
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
             }
         });
-
         LinearLayout.LayoutParams addButtonParams = new LinearLayout.LayoutParams(80, 80);
         addButtonParams.setMargins(0, 20, 0, 0);
         addButton.setLayoutParams(addButtonParams);
-
-
-        TextView quantity = new TextView(getActivity().getApplicationContext());
-        quantity.setText(productQuantity);
-        quantity.setTextSize(30);
-        quantity.setPadding(16, 8, 16, 0);
-        quantityLayout.addView(quantity);
         quantityLayout.addView(addButton);
 
 
