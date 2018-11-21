@@ -13,10 +13,11 @@ public class Database {
                 .build();
     }
 
-    public static Database getInstance(Context context){
+    synchronized public static Database getInstance(Context context){
         if(database == null){
             database = new Database(context);
         }
+
         return database;
     }
 
