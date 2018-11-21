@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 public class ListFragment extends Fragment {
     LinearLayout listOfProducts;
-    
+
 
     @Nullable
     @Override
