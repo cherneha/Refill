@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 public class AddFragment extends Fragment {
 
     LinearLayout addProduct;
+    LinearLayout buttonsLayout;
+
     AppDatabase db;
     ProductDao productDao;
     SyncProductDao syncProductDao;
@@ -22,13 +24,14 @@ public class AddFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_fragment, container, false);
         addProduct = view.findViewById(R.id.add_product);
+        buttonsLayout = addProduct.findViewById(R.id.buttons_layout);
 
         db = Database.getInstance(getActivity().getApplicationContext()).getAppDatabase();
         productDao = db.productDao();
         syncProductDao = new SyncProductDao(productDao);
 
-        Button button = view.findViewById(R.id.add_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button addButton = buttonsLayout.findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = ((EditText) addProduct.findViewById(R.id.name)).getText().toString();
@@ -51,6 +54,15 @@ public class AddFragment extends Fragment {
                 }
             }
         });
+
+        Button backButton = buttonsLayout.findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.fragment, new ListFragment()).commit();
+            }
+        });
+
         return view;
     }
 }

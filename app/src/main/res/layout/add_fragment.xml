@@ -40,11 +40,22 @@
             android:layout_height="wrap_content"
             android:hint="0.0"
             android:inputType="numberDecimal"/>
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/add_button"
-            android:text="Add"/>
-     </LinearLayout>
+            android:id="@+id/buttons_layout"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_button"
+                android:text="Add"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/back_button"
+                android:text="Back to list"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
