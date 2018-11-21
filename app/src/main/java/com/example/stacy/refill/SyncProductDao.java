@@ -67,43 +67,47 @@ public class SyncProductDao {
         return null;
     }
 
-    void insertAll(final Product... products) {
-        Thread myThread = new Thread(new Runnable(){
-            public void run(){
+    int insertAll(final Product... products) {
+        Callable<Integer> c = new Callable<Integer>() {
+            public Integer call() throws Exception {
                 productDao.insertAll(products);
+                return 0;
             }
-        });
-        myThread.start();
+        };
         try {
-            myThread.join();
-        } catch (InterruptedException e) {
+            return c.call();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return -1;
     }
-    void updateProduct(final Product product) {
-        Thread myThread = new Thread(new Runnable(){
-            public void run(){
+
+    int updateProduct(final Product product) {
+        Callable<Integer> c = new Callable<Integer>() {
+            public Integer call() throws Exception {
                 productDao.updateProduct(product);
+                return 0;
             }
-        });
-        myThread.start();
+        };
         try {
-            myThread.join();
-        } catch (InterruptedException e) {
+            return c.call();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return -1;
     }
-    void delete(final Product product) {
-        Thread myThread = new Thread(new Runnable(){
-            public void run(){
+    int delete(final Product product) {
+        Callable<Integer> c = new Callable<Integer>() {
+            public Integer call() throws Exception {
                 productDao.delete(product);
+                return 0;
             }
-        });
-        myThread.start();
+        };
         try {
-            myThread.join();
-        } catch (InterruptedException e) {
+            return c.call();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return -1;
     }
 }
