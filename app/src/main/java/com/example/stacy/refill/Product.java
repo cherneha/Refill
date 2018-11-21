@@ -22,12 +22,15 @@ public class Product {
 
     private double lastUpdateQuantity;
 
-    public Product(String name, double currentQuantity){
+    private String units;
+
+    public Product(String name, double currentQuantity, String units){
         this.name = name;
         this.currentQuantity = currentQuantity;
         this.lastUpdateQuantity = currentQuantity;
         this.dailyUpdate = 0;
         this.lastUpdate = new Date();
+        this.units = units;
     }
 
     public String getName() {
@@ -76,5 +79,12 @@ public class Product {
 
     public void setLastUpdateQuantity(double lastUpdateQuantity) {
         this.lastUpdateQuantity = lastUpdateQuantity;
+    }
+    public String getUnits(){
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
     }
 }
