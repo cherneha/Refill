@@ -61,15 +61,21 @@ public class ListFragment extends Fragment {
             addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()));
         }
 
-        CoordinatorLayout listWrapper = view.findViewById(R.id.list_layout);
-
-        FloatingActionButton addButton = listWrapper.findViewById(R.id.add_fab);
+        FloatingActionButton addButton = view.findViewById(R.id.add_fab);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getFragmentManager().beginTransaction().replace(R.id.fragment, new AddFragment()).commit();
             }
         });
+
+//        ImageButton addButton = view.findViewById(R.id.add_product);
+//        addButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getFragmentManager().beginTransaction().replace(R.id.fragment, new AddFragment()).commit();
+//                }
+//            });
 
         return view;
     }
