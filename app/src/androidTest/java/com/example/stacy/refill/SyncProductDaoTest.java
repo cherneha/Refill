@@ -56,6 +56,18 @@ public class SyncProductDaoTest {
     }
 
     @Test
+    public void addMockData() throws Exception {
+        syncProductDao.insertAll(
+                new Product("Lime", 3),
+                new Product("Milk", 3.7),
+                new Product("Bread", 1),
+                new Product("Coffee", 5.6),
+                new Product("Salt", 8),
+                new Product("Water", 2.3),
+                new Product("Tea", 1.7));
+    }
+
+    @Test
     public void findByName() throws Exception {
         Product lime = new Product("Lime", 2);
         syncProductDao.insertAll(lime);
