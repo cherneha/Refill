@@ -71,6 +71,7 @@ public class SyncProductDao {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 productDao.insertAll(products);
+                System.out.println(productDao.getAll());
                 return 0;
             }
         };

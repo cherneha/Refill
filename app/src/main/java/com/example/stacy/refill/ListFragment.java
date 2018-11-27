@@ -24,6 +24,7 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment {
@@ -45,7 +46,7 @@ public class ListFragment extends Fragment {
         productDao = db.productDao();
         syncProductDao = new SyncProductDao(productDao);
 
-        syncProductDao.insertAll(
+        int returnCode = syncProductDao.insertAll(
                 new Product("Lime", 3, "kg"),
                 new Product("Milk", 3.7, "l"),
                 new Product("Bread", 1, "loaf"),
@@ -53,6 +54,7 @@ public class ListFragment extends Fragment {
                 new Product("Salt", 8, "kg"),
                 new Product("Water", 2.3, "l"),
                 new Product("Tea", 1.7, "packet"));
+        System.out.println(returnCode);
 
         List<Product> products = syncProductDao.getAll();
 
@@ -121,7 +123,7 @@ public class ListFragment extends Fragment {
         }
 
         ImageButton deleteButton = new ImageButton(getActivity().getApplicationContext());
-        if (Build.VERSION.SDK_INT > 15) {
+        if (Build.VERSION.SDK_INT > 23) {
             Drawable deleteIcon = getActivity().getResources().getDrawable(R.drawable.delete);
             deleteIcon.setBounds(0, 0, 50, 50);
             deleteButton.setBackground(deleteIcon);
