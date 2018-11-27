@@ -1,10 +1,11 @@
 package com.example.stacy.refill;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,16 +15,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.stacy.refill.Alarm.AlarmReceiver;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     AppDatabase db;
 
+    private PendingIntent pendingIntent;
+    private AlarmManager manager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -48,6 +54,15 @@ public class MainActivity extends AppCompatActivity
 
         db = Database.getInstance(this.getApplicationContext()).getAppDatabase();
         super.setContentView(drawer);
+
+        // Retrieve a PendingIntent that will perform a broadcast
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        //TODO remove WAKEUP, just for testing
+        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 10, pendingIntent);
+        //manager.cancel(pendingIntent);
     }
 
     @Override
