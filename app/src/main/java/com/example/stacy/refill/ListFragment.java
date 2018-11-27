@@ -64,6 +64,12 @@ public class ListFragment extends Fragment {
         }
 
         FloatingActionButton addButton = view.findViewById(R.id.add_fab);
+        if (Build.VERSION.SDK_INT > 15) {
+            Drawable addIcon = getActivity().getResources().getDrawable(R.drawable.add2);
+            addIcon.setBounds(0, 0, 50, 50);
+            addButton.setImageDrawable(addIcon);
+
+        }
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
