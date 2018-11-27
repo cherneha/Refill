@@ -2,19 +2,17 @@ package com.example.stacy.refill;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,6 +21,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -46,14 +45,14 @@ public class ListFragment extends Fragment {
         productDao = db.productDao();
         syncProductDao = new SyncProductDao(productDao);
 
-//        syncProductDao.insertAll(
-//                new Product("Lime", 3),
-//                new Product("Milk", 3.7),
-//                new Product("Bread", 1),
-//                new Product("Coffee", 5.6),
-//                new Product("Salt", 8),
-//                new Product("Water", 2.3),
-//                new Product("Tea", 1.7));
+        syncProductDao.insertAll(
+                new Product("Lime", 3, "kg"),
+                new Product("Milk", 3.7, "l"),
+                new Product("Bread", 1, "loaf"),
+                new Product("Coffee", 5.6, "kg"),
+                new Product("Salt", 8, "kg"),
+                new Product("Water", 2.3, "l"),
+                new Product("Tea", 1.7, "packet"));
 
         List<Product> products = syncProductDao.getAll();
 
@@ -61,6 +60,23 @@ public class ListFragment extends Fragment {
             System.out.println(products.get(i).getName());
             addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()));
         }
+
+        FloatingActionButton addButton = view.findViewById(R.id.add_fab);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.fragment, new AddFragment()).commit();
+            }
+        });
+
+//        ImageButton addButton = view.findViewById(R.id.add_product);
+//        addButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getFragmentManager().beginTransaction().replace(R.id.fragment, new AddFragment()).commit();
+//                }
+//            });
+
         return view;
     }
 
