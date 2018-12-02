@@ -24,6 +24,8 @@ public class Product {
 
     private String units;
 
+    private double averageDays;
+
     public Product(String name, double currentQuantity, String units){
         this.name = name;
         this.currentQuantity = currentQuantity;
@@ -31,6 +33,7 @@ public class Product {
         this.dailyUpdate = 0;
         this.lastUpdate = new Date();
         this.units = units;
+        this.averageDays = -1;
     }
 
     public String getName() {
@@ -86,5 +89,13 @@ public class Product {
 
     public void setUnits(String units) {
         this.units = units;
+    }
+
+    public void setAverageDays(double averageDays){
+        this.averageDays = averageDays;
+    }
+
+    public double getAverageDays() {
+        return averageDays;
     }
 }

@@ -7,11 +7,11 @@ public class SyncProductDao {
 
     ProductDao productDao;
 
-    SyncProductDao(ProductDao productDao) {
+    public SyncProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
 
-    List<Product> getAll() {
+    public List<Product> getAll() {
         Callable<List<Product>> c = new Callable<List<Product>>() {
             public List<Product> call() throws Exception {
                 return productDao.getAll();
@@ -83,7 +83,7 @@ public class SyncProductDao {
         return -1;
     }
 
-    int updateProduct(final Product product) {
+    public int updateProduct(final Product product) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 productDao.updateProduct(product);
