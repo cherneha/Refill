@@ -16,6 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.stacy.refill.Alarm.AlarmReceiver;
+import com.example.stacy.refill.Alarm.AlarmUtil;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -61,7 +65,8 @@ public class MainActivity extends AppCompatActivity
 
         manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         //TODO remove WAKEUP, just for testing
-        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 10, pendingIntent);
+
+        AlarmUtil.setAlarm(manager, pendingIntent);
         //manager.cancel(pendingIntent);
     }
 

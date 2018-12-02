@@ -32,10 +32,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         //Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         sendNotif(1, pendingIntent, context);
-        AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        //AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         //TODO remove WAKEUP, just for testing
         // set 1000* 3600*24 - one day
-        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000*30, pendingIntent);
+        //manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000*30, pendingIntent);
 
     }
 
