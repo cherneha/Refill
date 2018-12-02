@@ -8,6 +8,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
@@ -25,22 +28,29 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-
 public class AlarmReceiver extends BroadcastReceiver {
 
     NotificationManager nm;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        AlarmUtil.setAlarm(context, pendingIntent);
         AppDatabase db = Database.getInstance(context).getAppDatabase();
         ProductDao productDao = db.productDao();
         SyncProductDao syncProductDao = new SyncProductDao(productDao);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        // for test purpose
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone r = RingtoneManager.getRingtone(context, notification);
+        r.play();
+
+        // for test purpose
+        String firstProduct = "no product";
 
         List<Product> products = syncProductDao.getAll();
+        if(products.size() > 0)
+            firstProduct = products.get(0).getName();
         for (Product product : products){
             Double averageDays = product.getAverageDays();
             Double lastAmount = product.getLastUpdateQuantity();
@@ -58,7 +68,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         //TODO check producrs in db and push notifications
         //Next code it's just an example to test
         // For our recurring task, we'll just display a message
-        //Toast.makeText(context, "I'm running", Toast.LENGTH_SHORT).show();
+        // for test purpose
+        Toast.makeText(context, firstProduct, Toast.LENGTH_SHORT).show();
 
         //nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         //Intent alarmIntent = new Intent(this, AlarmReceiver.class);

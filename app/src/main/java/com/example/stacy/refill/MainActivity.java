@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity
     AppDatabase db;
 
     private PendingIntent pendingIntent;
-    private AlarmManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +62,7 @@ public class MainActivity extends AppCompatActivity
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
-        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        //TODO remove WAKEUP, just for testing
-
-        AlarmUtil.setAlarm(manager, pendingIntent);
+        AlarmUtil.setAlarm(this.getApplicationContext(), pendingIntent);
         //manager.cancel(pendingIntent);
     }
 
