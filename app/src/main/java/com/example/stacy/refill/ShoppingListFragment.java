@@ -45,7 +45,7 @@ public class ShoppingListFragment extends Fragment {
 
         for (int i = 0; i < listItems.size(); i++) {
             System.out.println(listItems.get(i).getName());
-            addBlock(listItems.get(i).getName(), String.valueOf(listItems.get(i).getQuantity()));
+            addBlock(listItems.get(i).getName(), String.valueOf(listItems.get(i).getQuantity()), listItems.get(i).getUnits());
         }
 
         FloatingActionButton addButton = view.findViewById(R.id.add_fab);
@@ -53,6 +53,7 @@ public class ShoppingListFragment extends Fragment {
             Drawable addIcon = getActivity().getResources().getDrawable(R.drawable.add2);
             addIcon.setBounds(0, 0, 50, 50);
             addButton.setImageDrawable(addIcon);
+            addButton.setBackgroundColor(Color.parseColor("#f09090"));
 
         }
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +65,7 @@ public class ShoppingListFragment extends Fragment {
         return view;
     }
 
-    public void addBlock(final String inputName, String productQuantity) {
+    public void addBlock(final String inputName, String productQuantity, String units) {
 
         final LinearLayout block = new LinearLayout(getActivity().getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -72,10 +73,10 @@ public class ShoppingListFragment extends Fragment {
         if (Build.VERSION.SDK_INT > 15) {
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(12);
-            shape.setColor(Color.parseColor("#FFE0B2"));
+            shape.setColor(Color.parseColor("#f0cece"));
             block.setBackground(shape);
         } else {
-            block.setBackgroundColor(Color.parseColor("#FFE0B2"));
+            block.setBackgroundColor(Color.parseColor("#e4a7a7"));
         }
 
         block.setOrientation(LinearLayout.VERTICAL);
@@ -88,10 +89,10 @@ public class ShoppingListFragment extends Fragment {
         if (Build.VERSION.SDK_INT > 15) {
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(12);
-            shape.setColor(getResources().getColor(R.color.colorPrimary));
+            shape.setColor(Color.parseColor("#e4a7a7"));
             nameLayout.setBackground(shape);
         } else {
-            nameLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            nameLayout.setBackgroundColor(Color.parseColor("#e4a7a7"));
         }
 
         final ImageButton editButton = new ImageButton(getActivity().getApplicationContext());
@@ -101,7 +102,7 @@ public class ShoppingListFragment extends Fragment {
             editButton.setBackground(editIcon);
 
         } else {
-            editButton.setBackgroundColor(Color.parseColor("#FF9800"));
+            editButton.setBackgroundColor(Color.parseColor("#e4a7a7"));
         }
 
         ImageButton deleteButton = new ImageButton(getActivity().getApplicationContext());
@@ -177,6 +178,12 @@ public class ShoppingListFragment extends Fragment {
         quantity.setTextSize(30);
         quantity.setPadding(16, 8, 16, 0);
         quantityLayout.addView(quantity);
+
+        final TextView unit = new TextView(getActivity().getApplicationContext());
+        unit.setText(units);
+        unit.setTextSize(30);
+        unit.setPadding(32, 8, 16, 0);
+        quantityLayout.addView(unit);
 
         ImageButton addButton = new ImageButton(getActivity().getApplicationContext());
         if (Build.VERSION.SDK_INT > 15) {

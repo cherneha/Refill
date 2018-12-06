@@ -60,7 +60,7 @@ public class ListFragment extends Fragment {
 
         for (int i = 0; i < products.size(); i++) {
             System.out.println(products.get(i).getName());
-            addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()));
+            addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()), products.get(i).getUnits());
         }
 
         FloatingActionButton addButton = view.findViewById(R.id.add_fab);
@@ -80,7 +80,7 @@ public class ListFragment extends Fragment {
         return view;
     }
 
-    public void addBlock(final String inputName, String productQuantity) {
+    public void addBlock(final String inputName, String productQuantity, String units) {
 
         final LinearLayout block = new LinearLayout(getActivity().getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -209,6 +209,12 @@ public class ListFragment extends Fragment {
         quantity.setTextSize(30);
         quantity.setPadding(16, 8, 16, 0);
         quantityLayout.addView(quantity);
+
+        final TextView unit = new TextView(getActivity().getApplicationContext());
+        unit.setText(units);
+        unit.setTextSize(30);
+        unit.setPadding(16, 8, 16, 0);
+        quantityLayout.addView(unit);
 
         ImageButton addButton = new ImageButton(getActivity().getApplicationContext());
         if (Build.VERSION.SDK_INT > 15) {
