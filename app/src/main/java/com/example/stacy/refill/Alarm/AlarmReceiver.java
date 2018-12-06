@@ -51,18 +51,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         String firstProduct = "no product";
 
         List<Product> products = syncProductDao.getAll();
-        if(products.size() > 0)
-            firstProduct = products.get(0).getName();
-        for (Product product : products){
-            Double averageDays = product.getAverageDays();
-            Double lastAmount = product.getLastUpdateQuantity();
-            if(averageDays != -1){
-                int daysFromLastUpdate = getTimeRemaining(product.getLastUpdate());
-                // TODO think about adding remaining days logic instead of remaining product logic
-                int remainingDays = averageDays.intValue() - daysFromLastUpdate;
-                double remainingProductPercent = daysFromLastUpdate / (averageDays * lastAmount);
-                if(remainingProductPercent < Constants.ProductLeastAmount){
-                    sendNotif(product.hashCode(), pendingIntent, context, product.getName());
+        if(products != null) {
+            if (products.size() > 0)
+                firstProduct = products.get(0).getName();
+            for (Product product : products) {
+                Double averageDays = product.getAverageDays();
+                Double lastAmount = product.getLastUpdateQuantity();
+                if (averageDays != -1) {
+                    int daysFromLastUpdate = getTimeRemaining(product.getLastUpdate());
+                    // TODO think about adding remaining days logic instead of remaining product logic
+                    int remainingDays = averageDays.intValue() - daysFromLastUpdate;
+                    double remainingProductPercent = daysFromLastUpdate / (averageDays * lastAmount);
+                    if (remainingProductPercent < Constants.ProductLeastAmount) {
+                        sendNotif(product.hashCode(), pendingIntent, context, product.getName());
+                    }
                 }
             }
         }

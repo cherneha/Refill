@@ -58,9 +58,11 @@ public class ListFragment extends Fragment {
 
         List<Product> products = syncProductDao.getAll();
 
-        for (int i = 0; i < products.size(); i++) {
-            System.out.println(products.get(i).getName());
-            addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()), products.get(i).getUnits());
+        if(products != null) {
+            for (int i = 0; i < products.size(); i++) {
+                System.out.println(products.get(i).getName());
+                addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()), products.get(i).getUnits());
+            }
         }
 
         FloatingActionButton addButton = view.findViewById(R.id.add_fab);
