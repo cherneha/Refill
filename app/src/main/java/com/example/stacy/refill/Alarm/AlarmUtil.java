@@ -26,7 +26,8 @@ public class AlarmUtil {
         cal.set(Calendar.MILLISECOND, 0);
         //check if we want to wake up tomorrow
         if (System.currentTimeMillis() > cal.getTimeInMillis()){
-            cal.setTimeInMillis(cal.getTimeInMillis()+ 24*60*60*1000);// Okay, then tomorrow ...
+            cal.setTimeInMillis(cal.getTimeInMillis()+ 5*1000);// Okay, then tomorrow ...
+//            cal.setTimeInMillis(cal.getTimeInMillis()+ 24*60*60*1000);// Okay, then tomorrow ...
         }
         // TODO think about wake up
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

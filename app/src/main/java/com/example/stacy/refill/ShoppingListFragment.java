@@ -8,59 +8,44 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ListFragment extends Fragment {
-    LinearLayout listOfProducts;
+public class ShoppingListFragment extends Fragment {
+
+    LinearLayout listOfListItems;
     AppDatabase db;
-    ProductDao productDao;
-    SyncProductDao syncProductDao;
+    ListItemDao listItemDao;
+    SyncListItemDao syncListItemDao;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
-        listOfProducts = view.findViewById(R.id.product_list);
+        View view = inflater.inflate(R.layout.shopping_list_fragment, container, false);
+        listOfListItems = view.findViewById(R.id.shopping_list);
         LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linLayoutParam.gravity = Gravity.CENTER_HORIZONTAL;
 
         db = Database.getInstance(getActivity().getApplicationContext()).getAppDatabase();
-        productDao = db.productDao();
-        syncProductDao = new SyncProductDao(productDao);
+        listItemDao = db.listItemDao();
+        syncListItemDao = new SyncListItemDao(listItemDao);
 
-        int returnCode = syncProductDao.insertAll(
-                new Product("Lime", 3, "kg"),
-                new Product("Milk", 3.7, "l"),
-                new Product("Bread", 1, "loaf"),
-                new Product("Coffee", 5.6, "kg"),
-                new Product("Salt", 8, "kg"),
-                new Product("Water", 2.3, "l"),
-                new Product("Tea", 1.7, "packet"));
-        System.out.println(returnCode);
+        List<ListItem> listItems = syncListItemDao.getAll();
 
-        List<Product> products = syncProductDao.getAll();
-
-        for (int i = 0; i < products.size(); i++) {
-            System.out.println(products.get(i).getName());
-            addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()));
+        for (int i = 0; i < listItems.size(); i++) {
+            System.out.println(listItems.get(i).getName());
+            addBlock(listItems.get(i).getName(), String.valueOf(listItems.get(i).getQuantity()));
         }
 
         FloatingActionButton addButton = view.findViewById(R.id.add_fab);
@@ -73,10 +58,9 @@ public class ListFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragmentManager().beginTransaction().replace(R.id.fragment, new AddFragment()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.fragment, new AddItemFragment()).commit();
             }
         });
-
         return view;
     }
 
@@ -130,8 +114,8 @@ public class ListFragment extends Fragment {
         }
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                syncProductDao.delete(syncProductDao.findByName(inputName));
-                listOfProducts.removeView(block);
+                syncListItemDao.delete(syncListItemDao.findByName(inputName));
+                listOfListItems.removeView(block);
                 return;
             }
         });
@@ -141,20 +125,6 @@ public class ListFragment extends Fragment {
 
         LinearLayout.LayoutParams buttonParams2 = new LinearLayout.LayoutParams(80, 80);
         buttonParams2.setMargins(650, 0, 0, 0);
-//        editButton.setLayoutParams(buttonParams2);
-
-
-//        Button menuButton = new Button(getActivity().getApplicationContext());
-//
-//        if (Build.VERSION.SDK_INT > 15) {
-//            Drawable bag = getActivity().getResources().getDrawable(R.drawable.dots_vertical);
-//            menuButton.setCompoundDrawablesWithIntrinsicBounds( bag, null, null, null );
-//            menuButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-//        }
-//        else {
-//            menuButton.setText(":");
-//        }
-//        menuButton.setGravity(Gravity.RIGHT);
 
 
         final TextView text = new TextView(getActivity().getApplicationContext());
@@ -164,8 +134,6 @@ public class ListFragment extends Fragment {
         nameLayout.setLayoutParams(params2);
         text.setGravity(Gravity.LEFT);
         nameLayout.addView(text);
-//        nameLayout.addView(menuButton);
-
         nameLayout.addView(editButton);
         nameLayout.addView(deleteButton);
         block.addView(nameLayout);
@@ -181,9 +149,9 @@ public class ListFragment extends Fragment {
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Product edited = syncProductDao.findByName(inputName);
+                        ListItem edited = syncListItemDao.findByName(inputName);
                         edited.setName(String.valueOf(input.getText()));
-                        syncProductDao.updateProduct(edited);
+                        syncListItemDao.updateListItem(edited);
 
                         text.setText(String.valueOf(input.getText()));
                     }
@@ -231,11 +199,11 @@ public class ListFragment extends Fragment {
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Product edited = syncProductDao.findByName(inputName);
+                        ListItem edited = syncListItemDao.findByName(inputName);
                         double newValue = Double.valueOf(String.valueOf(input.getText()))
-                                + edited.getCurrentQuantity();
-                        edited.setCurrentQuantity(newValue);
-                        syncProductDao.updateProduct(edited);
+                                + edited.getQuantity();
+                        edited.setQuantity(newValue);
+                        syncListItemDao.updateListItem(edited);
 
                         quantity.setText(String.valueOf(newValue));
                     }
@@ -255,21 +223,9 @@ public class ListFragment extends Fragment {
         addButton.setLayoutParams(addButtonParams);
         quantityLayout.addView(addButton);
 
-
-//        View view = new View(getActivity().getApplicationContext());
-//        LinearLayout.LayoutParams separatorParams = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT, 4);
-//
-//
-//        separatorParams.setMargins(8, 0, 8, 4);
-//        view.setLayoutParams(separatorParams);
-//        view.setBackgroundColor(Color.parseColor("#3E2723"));
-//        block.addView(view);
         block.addView(quantityLayout);
 
-        listOfProducts.addView(block);
+        listOfListItems.addView(block);
 
     }
-
-
 }

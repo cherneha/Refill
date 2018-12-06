@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 public class AlarmReceiver extends BroadcastReceiver {
 
     NotificationManager nm;
@@ -71,13 +73,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         // for test purpose
         Toast.makeText(context, firstProduct, Toast.LENGTH_SHORT).show();
 
-        //nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        //Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        //sendNotif(1, pendingIntent, context);
-        //AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+//        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        sendNotif(1, pendingIntent, context);
+        AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         //TODO remove WAKEUP, just for testing
         // set 1000* 3600*24 - one day
-        //manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000*30, pendingIntent);
+        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000*5, pendingIntent);
 
     }
 

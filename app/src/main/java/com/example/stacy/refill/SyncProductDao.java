@@ -39,7 +39,7 @@ public class SyncProductDao {
         return null;
     }
 
-    Product findByName(final  String name) {
+    Product findByName(final String name) {
         Callable<Product> c = new Callable<Product>() {
             public Product call() throws Exception {
                 return productDao.findByName(name);
@@ -97,6 +97,7 @@ public class SyncProductDao {
         }
         return -1;
     }
+
     int delete(final Product product) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {

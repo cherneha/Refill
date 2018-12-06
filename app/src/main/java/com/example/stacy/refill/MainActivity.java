@@ -1,8 +1,6 @@
 package com.example.stacy.refill;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,9 +15,6 @@ import android.view.MenuItem;
 
 import com.example.stacy.refill.Alarm.AlarmReceiver;
 import com.example.stacy.refill.Alarm.AlarmUtil;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -114,7 +109,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_shops:{
-                changeFragment(new ShopsFragment());
+                changeFragment(new ShoppingListFragment());
                 break;
             }
             case R.id.nav_manage:{
