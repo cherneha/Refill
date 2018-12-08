@@ -1,10 +1,6 @@
 package com.example.stacy.refill;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,10 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Database;
@@ -58,7 +51,7 @@ public class ListFragment extends Fragment {
         List<Product> products = syncProductDao.getAll();
         LayoutGenerator layoutGenerator = new LayoutGenerator(this.getActivity());
 
-        if(products != null) {
+        if (products != null) {
             for (int i = 0; i < products.size(); i++) {
                 System.out.println(products.get(i).getName());
                 layoutGenerator.addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()),
@@ -79,8 +72,7 @@ public class ListFragment extends Fragment {
                 getFragmentManager().beginTransaction().replace(R.id.fragment, new AddFragment()).commit();
             }
         });
-        
+
         return view;
     }
-
 }

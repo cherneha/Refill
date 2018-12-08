@@ -26,6 +26,8 @@ public class Product {
 
     private double averageDays;
 
+    private boolean updateNeeded;
+
     public Product(String name, double currentQuantity, String units){
         this.name = name;
         this.currentQuantity = currentQuantity;
@@ -34,6 +36,7 @@ public class Product {
         this.lastUpdate = new Date();
         this.units = units;
         this.averageDays = -1;
+        this.updateNeeded = false;
     }
 
     public String getName() {
@@ -97,5 +100,13 @@ public class Product {
 
     public double getAverageDays() {
         return averageDays;
+    }
+
+    public boolean isUpdateNeeded() {
+        return updateNeeded;
+    }
+
+    public void setUpdateNeeded(boolean updateNeeded) {
+        this.updateNeeded = updateNeeded;
     }
 }
