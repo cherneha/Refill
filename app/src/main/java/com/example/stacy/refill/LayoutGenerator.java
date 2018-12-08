@@ -113,7 +113,7 @@ public class LayoutGenerator<T extends Item> {
         block.addView(nameLayout);
         editButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(activity.getApplicationContext());
+                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
 
                 alert.setTitle("Rename Product");
                 alert.setMessage(inputName);
