@@ -19,6 +19,8 @@ import com.example.stacy.refill.DBManager.Database;
 import com.example.stacy.refill.DBManager.ProductDao;
 import com.example.stacy.refill.DBManager.SyncProductDao;
 
+import java.util.Date;
+
 public class LayoutGenerator {
     private Activity activity;
     AppDatabase db;
@@ -178,6 +180,8 @@ public class LayoutGenerator {
                         double newValue = Double.valueOf(String.valueOf(input.getText()))
                                 + edited.getCurrentQuantity();
                         edited.setCurrentQuantity(newValue);
+                        edited.setLastUpdateQuantity(newValue);
+                        edited.setLastUpdate(new Date());
                         syncProductDao.updateProduct(edited);
 
                         quantity.setText(String.valueOf(newValue));
