@@ -5,7 +5,7 @@ import com.example.stacy.refill.ListItem;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class SyncListItemDao {
+public class SyncListItemDao implements SyncDao<ListItem>{
 
     ListItemDao listItemDao;
 
@@ -56,7 +56,7 @@ public class SyncListItemDao {
         return -1;
     }
 
-    public int updateListItem(final ListItem listItem) {
+    public int update(final ListItem listItem) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 listItemDao.updateListItem(listItem);

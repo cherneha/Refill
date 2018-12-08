@@ -7,7 +7,7 @@ import com.example.stacy.refill.Product;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class SyncProductDao {
+public class SyncProductDao implements SyncDao<Product>{
 
     ProductDao productDao;
 
@@ -95,7 +95,7 @@ public class SyncProductDao {
         return -1;
     }
 
-    public int updateProduct(final Product product) {
+    public int update(final Product product) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 productDao.updateProduct(product);

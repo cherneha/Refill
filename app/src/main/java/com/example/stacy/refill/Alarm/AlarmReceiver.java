@@ -69,7 +69,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     // Update product current amount
                     product.setCurrentQuantity(remainingProductPercent);
 
-                    syncProductDao.updateProduct(product);
+                    syncProductDao.update(product);
                 }
             }
         }

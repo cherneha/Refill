@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity(indices = {@Index(value = "name", unique = true)})
 
-public class ListItem {
+public class ListItem extends Item{
     @PrimaryKey(autoGenerate = true)
     private long id;
 
@@ -31,6 +31,24 @@ public class ListItem {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public double getCurrentQuantity() {
+        return getQuantity();
+    }
+
+    @Override
+    public void setCurrentQuantity(double currentQuantity) {
+        setQuantity(currentQuantity);
+    }
+
+    // no logic
+    @Override
+    public void setLastUpdateQuantity(double lastUpdateQuantity) { }
+
+    // no logic
+    @Override
+    public void setLastUpdate(Date lastUpdate) {}
 
     public long getId() {
         return id;

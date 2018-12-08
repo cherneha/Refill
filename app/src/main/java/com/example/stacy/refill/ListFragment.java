@@ -49,7 +49,7 @@ public class ListFragment extends Fragment {
         System.out.println(returnCode);
 
         List<Product> products = syncProductDao.getAll();
-        LayoutGenerator layoutGenerator = new LayoutGenerator(this.getActivity());
+        LayoutGenerator layoutGenerator = new LayoutGenerator(this.getActivity(), syncProductDao);
 
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {

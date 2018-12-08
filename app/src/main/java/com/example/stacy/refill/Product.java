@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity(indices = {@Index(value = "name", unique = true)})
 
-public class Product {
+public class Product extends Item{
     @PrimaryKey(autoGenerate = true)
     private long id;
 

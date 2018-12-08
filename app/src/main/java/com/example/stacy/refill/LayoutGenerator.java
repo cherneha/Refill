@@ -17,22 +17,25 @@ import android.widget.TextView;
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Database;
 import com.example.stacy.refill.DBManager.ProductDao;
+import com.example.stacy.refill.DBManager.SyncDao;
 import com.example.stacy.refill.DBManager.SyncProductDao;
 
 import java.util.Date;
 
-public class LayoutGenerator {
+public class LayoutGenerator<T extends Item> {
     private Activity activity;
-    AppDatabase db;
-    ProductDao productDao;
-    SyncProductDao syncProductDao;
+    //AppDatabase db;
+    //ProductDao productDao;
+    SyncDao<T> syncDao;
 
-    public LayoutGenerator(Activity activity){
+    public LayoutGenerator(Activity activity, SyncDao<T> dao){
         this.activity = activity;
-        db = Database.getInstance(activity.getApplicationContext()).getAppDatabase();
-        productDao = db.productDao();
-        syncProductDao = new SyncProductDao(productDao);
+        //db = Database.getInstance(activity.getApplicationContext()).getAppDatabase();
+        //productDao = db.productDao();
+        //syncProductDao = new SyncProductDao(productDao);
+        syncDao = dao;
     }
+
 
     public void addBlock(final String inputName, String productQuantity, String units, final LinearLayout listOfProducts) {
 
@@ -84,7 +87,7 @@ public class LayoutGenerator {
         }
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                syncProductDao.delete(syncProductDao.findByName(inputName));
+                syncDao.delete(syncDao.findByName(inputName));
                 listOfProducts.removeView(block);
                 return;
             }
@@ -120,9 +123,9 @@ public class LayoutGenerator {
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Product edited = syncProductDao.findByName(inputName);
+                        T edited = syncDao.findByName(inputName);
                         edited.setName(String.valueOf(input.getText()));
-                        syncProductDao.updateProduct(edited);
+                        syncDao.update(edited);
 
                         text.setText(String.valueOf(input.getText()));
                     }
@@ -176,13 +179,13 @@ public class LayoutGenerator {
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Product edited = syncProductDao.findByName(inputName);
+                        T edited = syncDao.findByName(inputName);
                         double newValue = Double.valueOf(String.valueOf(input.getText()))
                                 + edited.getCurrentQuantity();
                         edited.setCurrentQuantity(newValue);
-                        edited.setLastUpdateQuantity(newValue);
-                        edited.setLastUpdate(new Date());
-                        syncProductDao.updateProduct(edited);
+                        //edited.setLastUpdateQuantity(newValue);
+                        //edited.setLastUpdate(new Date());
+                        syncDao.update(edited);
 
                         quantity.setText(String.valueOf(newValue));
                     }
