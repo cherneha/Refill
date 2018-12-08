@@ -1,6 +1,5 @@
 package com.example.stacy.refill.Alarm;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,18 +10,15 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.PowerManager;
-import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
-import com.example.stacy.refill.AppDatabase;
-import com.example.stacy.refill.Constants;
-import com.example.stacy.refill.Database;
+import com.example.stacy.refill.DBManager.AppDatabase;
+import com.example.stacy.refill.DBManager.Constants;
+import com.example.stacy.refill.DBManager.Database;
 import com.example.stacy.refill.Product;
-import com.example.stacy.refill.ProductDao;
+import com.example.stacy.refill.DBManager.ProductDao;
 import com.example.stacy.refill.R;
-import com.example.stacy.refill.SyncProductDao;
+import com.example.stacy.refill.DBManager.SyncProductDao;
 
 import java.util.Calendar;
 import java.util.Date;

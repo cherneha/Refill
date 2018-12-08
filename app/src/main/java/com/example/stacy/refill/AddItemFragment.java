@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.stacy.refill.DBManager.AppDatabase;
+import com.example.stacy.refill.DBManager.Database;
+import com.example.stacy.refill.DBManager.ListItemDao;
+import com.example.stacy.refill.DBManager.SyncListItemDao;
+
 public class AddItemFragment extends Fragment {
 
     LinearLayout addListItem;

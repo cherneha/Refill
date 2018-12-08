@@ -1,4 +1,4 @@
-package com.example.stacy.refill;
+package com.example.stacy.refill.DBManager;
 
 import android.arch.persistence.room.TypeConverter;
 

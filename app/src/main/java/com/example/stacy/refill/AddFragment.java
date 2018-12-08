@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.stacy.refill.DBManager.AppDatabase;
+import com.example.stacy.refill.DBManager.Database;
+import com.example.stacy.refill.DBManager.ProductDao;
+import com.example.stacy.refill.DBManager.SyncProductDao;
+
 public class AddFragment extends Fragment {
 
     LinearLayout addProduct;
@@ -26,7 +31,7 @@ public class AddFragment extends Fragment {
         addProduct = view.findViewById(R.id.add_product);
         buttonsLayout = addProduct.findViewById(R.id.buttons_layout);
 
-        db = Database.getInstance(getActivity().getApplicationContext()).getAppDatabase();
+        db = Database.getInstance(getContext()).getAppDatabase();
         productDao = db.productDao();
         syncProductDao = new SyncProductDao(productDao);
 
@@ -47,10 +52,9 @@ public class AddFragment extends Fragment {
                 if(!name.isEmpty() && !units.isEmpty()) {
 
                     Product product = new Product(name, amount, units);
-
-                    syncProductDao.insertAll(product);
-
+                    int status = syncProductDao.insertAll(product);
                     getFragmentManager().beginTransaction().replace(R.id.fragment, new ListFragment()).commit();
+
                 }
             }
         });
