@@ -1,4 +1,8 @@
-package com.example.stacy.refill;
+package com.example.stacy.refill.DBManager;
+
+import android.util.Log;
+
+import com.example.stacy.refill.Product;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -25,7 +29,7 @@ public class SyncProductDao {
         return null;
     }
 
-    List<Product> loadAllByIds(final int[] productIds) {
+    public List<Product> loadAllByIds(final int[] productIds) {
         Callable<List<Product>> c = new Callable<List<Product>>() {
             public List<Product> call() throws Exception {
                 return productDao.loadAllByIds(productIds);
@@ -39,7 +43,7 @@ public class SyncProductDao {
         return null;
     }
 
-    Product findByName(final String name) {
+    public Product findByName(final String name) {
         Callable<Product> c = new Callable<Product>() {
             public Product call() throws Exception {
                 return productDao.findByName(name);
@@ -53,7 +57,7 @@ public class SyncProductDao {
         return null;
     }
 
-    List<Product> getOrderedProducts(final int amount) {
+    public List<Product> getOrderedProducts(final int amount) {
         Callable<List<Product>> c = new Callable<List<Product>>() {
             public List<Product> call() throws Exception {
                 return productDao.getOrderedProducts(amount);
@@ -67,10 +71,16 @@ public class SyncProductDao {
         return null;
     }
 
-    int insertAll(final Product... products) {
+    public int insertAll(final Product... products) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
-                productDao.insertAll(products);
+                Log.i("productDao", products.toString());
+                try {
+                    productDao.insertAll(products);
+                }catch (Exception e){
+                    Log.i("daoError",e.getMessage());
+                    e.printStackTrace();
+                }
                 System.out.println(productDao.getAll());
                 return 0;
             }
@@ -78,7 +88,9 @@ public class SyncProductDao {
         try {
             return c.call();
         } catch (Exception e) {
+            Log.i("daoError",e.getMessage());
             e.printStackTrace();
+
         }
         return -1;
     }
@@ -98,7 +110,7 @@ public class SyncProductDao {
         return -1;
     }
 
-    int delete(final Product product) {
+    public int delete(final Product product) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 productDao.delete(product);

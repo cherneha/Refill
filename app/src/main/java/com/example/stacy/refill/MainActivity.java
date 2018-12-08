@@ -15,6 +15,8 @@ import android.view.MenuItem;
 
 import com.example.stacy.refill.Alarm.AlarmReceiver;
 import com.example.stacy.refill.Alarm.AlarmUtil;
+import com.example.stacy.refill.DBManager.AppDatabase;
+import com.example.stacy.refill.DBManager.Database;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

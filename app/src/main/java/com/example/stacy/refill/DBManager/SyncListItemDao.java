@@ -1,4 +1,6 @@
-package com.example.stacy.refill;
+package com.example.stacy.refill.DBManager;
+
+import com.example.stacy.refill.ListItem;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -25,7 +27,7 @@ public class SyncListItemDao {
         return null;
     }
 
-    ListItem findByName(final String name) {
+    public ListItem findByName(final String name) {
         Callable<ListItem> c = new Callable<ListItem>() {
             public ListItem call() throws Exception {
                 return listItemDao.findByName(name);
@@ -39,7 +41,7 @@ public class SyncListItemDao {
         return null;
     }
 
-    int insertAll(final ListItem... listItems) {
+    public int insertAll(final ListItem... listItems) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 listItemDao.insertAll(listItems);
@@ -69,7 +71,7 @@ public class SyncListItemDao {
         return -1;
     }
 
-    int delete(final ListItem listItem) {
+    public int delete(final ListItem listItem) {
         Callable<Integer> c = new Callable<Integer>() {
             public Integer call() throws Exception {
                 listItemDao.delete(listItem);

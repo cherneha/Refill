@@ -4,21 +4,20 @@ import static org.hamcrest.CoreMatchers.is;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.stacy.refill.DBManager.AppDatabase;
+import com.example.stacy.refill.DBManager.ProductDao;
+
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
