@@ -58,9 +58,18 @@ public class AlarmReceiver extends BroadcastReceiver {
                     // TODO think about adding remaining days logic instead of remaining product logic
                     int remainingDays = averageDays.intValue() - daysFromLastUpdate;
                     double remainingProductPercent = daysFromLastUpdate / (averageDays * lastAmount);
-                    if (remainingProductPercent < Constants.ProductLeastAmount) {
+                    //if (remainingProductPercent < Constants.ProductLeastAmount) {
+                    //    sendNotif(product.hashCode(), pendingIntent, context, product.getName());
+                    //}
+                    if (remainingDays < Constants.DaysLeastAmount){
                         sendNotif(product.hashCode(), pendingIntent, context, product.getName());
+                        product.setUpdateNeeded(true);
                     }
+
+                    // Update product current amount
+                    product.setCurrentQuantity(remainingProductPercent);
+
+                    syncProductDao.updateProduct(product);
                 }
             }
         }
