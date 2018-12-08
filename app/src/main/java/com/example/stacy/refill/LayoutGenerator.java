@@ -168,7 +168,6 @@ public class LayoutGenerator<T extends Item> {
         }
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 AlertDialog.Builder alert = new AlertDialog.Builder(activity);
 
                 alert.setTitle("Add");
@@ -183,8 +182,8 @@ public class LayoutGenerator<T extends Item> {
                         double newValue = Double.valueOf(String.valueOf(input.getText()))
                                 + edited.getCurrentQuantity();
                         edited.setCurrentQuantity(newValue);
-                        //edited.setLastUpdateQuantity(newValue);
-                        //edited.setLastUpdate(new Date());
+                        edited.setLastUpdateQuantity(newValue);
+                        edited.setLastUpdate(new Date());
                         syncDao.update(edited);
 
                         quantity.setText(String.valueOf(newValue));
