@@ -50,6 +50,32 @@ public class ListItem extends Item{
     @Override
     public void setLastUpdate(Date lastUpdate) {}
 
+    // no logic
+    @Override
+    double getAverageDays() {
+        return 0d;
+    }
+
+    // no logic
+    @Override
+    Date getLastUpdate() {
+        return null;
+    }
+
+    // no logic
+    @Override
+    double getLastUpdateQuantity() {
+        return 0d;
+    }
+
+    // no logic
+    @Override
+    void setAverageDays(double averageDays) { }
+
+    // no logic
+    @Override
+    void setUpdateNeeded(boolean updateNeeded) { }
+
     public long getId() {
         return id;
     }

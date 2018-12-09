@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
                 if(products.get(i).isUpdateNeeded()) {
                     System.out.println(products.get(i).getName());
                     layoutGenerator.addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()),
-                            products.get(i).getUnits(), listOfProductsToUpdate);
+                            products.get(i).getUnits(), listOfProductsToUpdate, true);
                 }
             }
         }

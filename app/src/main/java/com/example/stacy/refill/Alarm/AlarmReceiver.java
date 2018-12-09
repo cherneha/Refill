@@ -12,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.stacy.refill.Calendar.DateUtils;
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Constants;
 import com.example.stacy.refill.DBManager.Database;
@@ -19,6 +20,7 @@ import com.example.stacy.refill.Product;
 import com.example.stacy.refill.DBManager.ProductDao;
 import com.example.stacy.refill.R;
 import com.example.stacy.refill.DBManager.SyncProductDao;
+import com.example.stacy.refill.SettingsPreferences;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +48,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         // for test purpose
         String firstProduct = "no product";
 
+        nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
         List<Product> products = syncProductDao.getAll();
         if(products != null) {
             if (products.size() > 0)
@@ -53,20 +57,22 @@ public class AlarmReceiver extends BroadcastReceiver {
             for (Product product : products) {
                 Double averageDays = product.getAverageDays();
                 Double lastAmount = product.getLastUpdateQuantity();
+
                 if (averageDays != -1) {
-                    int daysFromLastUpdate = getTimeRemaining(product.getLastUpdate());
-                    // TODO think about adding remaining days logic instead of remaining product logic
-                    int remainingDays = averageDays.intValue() - daysFromLastUpdate;
-                    double remainingProductPercent = daysFromLastUpdate / (averageDays * lastAmount);
-                    //if (remainingProductPercent < Constants.ProductLeastAmount) {
-                    //    sendNotif(product.hashCode(), pendingIntent, context, product.getName());
-                    //}
-                    if (remainingDays < Constants.DaysLeastAmount){
-                        sendNotif(product.hashCode(), pendingIntent, context, product.getName());
+                    int daysFromLastUpdate = DateUtils.getTimeRemaining(product.getLastUpdate());
+                    double remainingProductPercent = lastAmount - (double)daysFromLastUpdate / averageDays;
+                    if(remainingProductPercent < 0)
+                        remainingProductPercent = 0;
+                    if (AlarmUtil.isRemainingDaysLessThanAverage(product)){
                         product.setUpdateNeeded(true);
                     }
-
-                    // Update product current amount
+                    else{
+                        product.setUpdateNeeded(false);
+                    }
+                    if(product.isUpdateNeeded()){
+                        sendNotif(product.getName().hashCode(), pendingIntent, context, product.getName());
+                    }
+                    // Update product current quantity
                     product.setCurrentQuantity(remainingProductPercent);
 
                     syncProductDao.update(product);
@@ -79,14 +85,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         // For our recurring task, we'll just display a message
         // for test purpose
         Toast.makeText(context, firstProduct, Toast.LENGTH_SHORT).show();
-
-        nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 //        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         sendNotif(1, pendingIntent, context);
         AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         //TODO remove WAKEUP, just for testing
         // set 1000* 3600*24 - one day
-        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000*5, pendingIntent);
+        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000*10, pendingIntent);
 
     }
 
@@ -117,7 +121,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         //notif.setLatestEventInfo(context, "Title " + id, "Content " + id, pIntent);
         Notification.Builder builder = new Notification.Builder(context);
         //builder.setAutoCancel(false);
-        //builder.setTicker("this is ticker text");
+        builder.setTicker("this is ticker text");
         builder.setContentTitle("Refill Notification");
         builder.setContentText("You should buy product " + productName);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
@@ -126,39 +130,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         // builder.setSubText("This is subtext...");   //API level 16
         //builder.setNumber(100);
         Notification notif = builder.build();
+        System.out.println(id);
+        System.out.println(productName);
 
         nm.notify(id, notif);
-    }
-
-    private int getTimeRemaining(Date previousDate)
-    {
-        Calendar sDate = getCalendar(previousDate);
-        Calendar eDate = getCalendar(System.currentTimeMillis());
-        //Calendar eDate = toCalendar(System.currentTimeMillis());
-
-        // Get the represented date in milliseconds
-        long milis1 = sDate.getTimeInMillis();
-        long milis2 = eDate.getTimeInMillis();
-
-        // Calculate difference in milliseconds
-        long diff = Math.abs(milis2 - milis1);
-
-        return (int)(diff / (24 * 60 * 60 * 1000));
-    }
-
-    private Calendar getCalendar(Date date)
-    {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar;
-    }
-
-    private Calendar getCalendar(long millis){
-        Date date = new Date(millis);
-        return getCalendar(date);
     }
 }

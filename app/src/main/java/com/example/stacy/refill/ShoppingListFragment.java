@@ -53,7 +53,7 @@ public class ShoppingListFragment extends Fragment {
             for (int i = 0; i < listItems.size(); i++) {
                 System.out.println(listItems.get(i).getName());
                 layoutGenerator.addBlock(listItems.get(i).getName(), String.valueOf(listItems.get(i).getQuantity()),
-                        listItems.get(i).getUnits(), listOfListItems);
+                        listItems.get(i).getUnits(), listOfListItems, false);
             }
         }
 

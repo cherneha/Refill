@@ -9,11 +9,15 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.stacy.refill.Alarm.AlarmUtil;
+import com.example.stacy.refill.Calculation.MACalculation;
+import com.example.stacy.refill.Calendar.DateUtils;
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Database;
 import com.example.stacy.refill.DBManager.ProductDao;
@@ -37,7 +41,8 @@ public class LayoutGenerator<T extends Item> {
     }
 
 
-    public void addBlock(final String inputName, String productQuantity, String units, final LinearLayout listOfProducts) {
+    public void addBlock(final String inputName, String productQuantity, String units, final LinearLayout listOfProducts,
+                         final boolean withRunOut) {
 
         final LinearLayout block = new LinearLayout(activity.getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -110,6 +115,7 @@ public class LayoutGenerator<T extends Item> {
 
         nameLayout.addView(editButton);
         nameLayout.addView(deleteButton);
+
         block.addView(nameLayout);
         editButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -141,10 +147,8 @@ public class LayoutGenerator<T extends Item> {
             }
         });
 
-
         LinearLayout quantityLayout = new LinearLayout(activity.getApplicationContext());
         quantityLayout.setOrientation(LinearLayout.HORIZONTAL);
-
 
         final TextView quantity = new TextView(activity.getApplicationContext());
         quantity.setText(productQuantity);
@@ -157,6 +161,42 @@ public class LayoutGenerator<T extends Item> {
         unit.setTextSize(30);
         unit.setPadding(16, 8, 16, 0);
         quantityLayout.addView(unit);
+
+        if(withRunOut) {
+            final Button runOutButton = new Button(activity.getApplicationContext());
+            runOutButton.setText("Run out");
+            runOutButton.setTextSize(20);
+            runOutButton.setBackgroundColor(activity.getResources().getColor(R.color.colorPrimary));
+            runOutButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    T runOut = syncDao.findByName(inputName);
+
+                    int daysFromLastUpdate = DateUtils.getTimeRemaining(runOut.getLastUpdate());
+                    // we want to have days value on 100% of product
+                    double daysFromLastUpdateWithQuantity = daysFromLastUpdate;
+                    if(runOut.getLastUpdateQuantity() != 0)
+                        daysFromLastUpdateWithQuantity = daysFromLastUpdate / runOut.getLastUpdateQuantity();
+
+                    Double prevEma = runOut.getAverageDays(); // it's on 100% of product
+                    //int remainingDays = prevEma.intValue() - daysFromLastUpdate;
+                    double newEma;
+                    if(prevEma == -1){
+                        newEma = daysFromLastUpdateWithQuantity;
+                    }
+                    else {
+                        newEma = MACalculation.Calculate(prevEma, daysFromLastUpdateWithQuantity);
+                    }
+                    runOut.setAverageDays(newEma);
+                    runOut.setCurrentQuantity(0d);
+                    runOut.setLastUpdate(new Date());
+                    runOut.setLastUpdateQuantity(0d);
+                    runOut.setUpdateNeeded(true);
+                    syncDao.update(runOut);
+                    quantity.setText("0.0");
+                }
+            });
+            nameLayout.addView(runOutButton);
+        }
 
         ImageButton addButton = new ImageButton(activity.getApplicationContext());
         if (Build.VERSION.SDK_INT > 15) {
@@ -184,6 +224,8 @@ public class LayoutGenerator<T extends Item> {
                         edited.setCurrentQuantity(newValue);
                         edited.setLastUpdateQuantity(newValue);
                         edited.setLastUpdate(new Date());
+                        if(withRunOut && !AlarmUtil.isRemainingDaysLessThanAverage((Product) edited))
+                            edited.setUpdateNeeded(false);
                         syncDao.update(edited);
 
                         quantity.setText(String.valueOf(newValue));
@@ -203,10 +245,7 @@ public class LayoutGenerator<T extends Item> {
         addButtonParams.setMargins(0, 20, 0, 0);
         addButton.setLayoutParams(addButtonParams);
         quantityLayout.addView(addButton);
-
         block.addView(quantityLayout);
-
         listOfProducts.addView(block);
-
     }
 }

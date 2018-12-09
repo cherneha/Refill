@@ -5,6 +5,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 
+import com.example.stacy.refill.Calendar.DateUtils;
+import com.example.stacy.refill.DBManager.Constants;
+import com.example.stacy.refill.Product;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -26,6 +30,7 @@ public class AlarmUtil {
         cal.set(Calendar.MILLISECOND, 0);
         //check if we want to wake up tomorrow
         if (System.currentTimeMillis() > cal.getTimeInMillis()){
+            // for test purpose. this row should be removed. next row should be uncommented
             cal.setTimeInMillis(cal.getTimeInMillis()+ 5*1000);// Okay, then tomorrow ...
 //            cal.setTimeInMillis(cal.getTimeInMillis()+ 24*60*60*1000);// Okay, then tomorrow ...
         }
@@ -36,5 +41,17 @@ public class AlarmUtil {
         else{
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
         }
+    }
+
+    public static boolean isRemainingDaysLessThanAverage(Product product){
+        Double averageDays = product.getAverageDays();
+        Double lastAmount = product.getLastUpdateQuantity();
+        if (averageDays != -1) {
+            int daysFromLastUpdate = DateUtils.getTimeRemaining(product.getLastUpdate());
+            int remainingDays = Double.valueOf(averageDays * lastAmount).intValue() - daysFromLastUpdate;
+            if (remainingDays <= Constants.DaysLeastAmount)
+                return true;
+        }
+        return false;
     }
 }
