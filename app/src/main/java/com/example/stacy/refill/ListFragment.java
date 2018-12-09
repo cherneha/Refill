@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,16 +38,7 @@ public class ListFragment extends Fragment {
         db = Database.getInstance(getActivity().getApplicationContext()).getAppDatabase();
         productDao = db.productDao();
         syncProductDao = new SyncProductDao(productDao);
-
-        int returnCode = syncProductDao.insertAll(
-                new Product("Lime", 3, "kg"),
-                new Product("Milk", 3.7, "l"),
-                new Product("Bread", 1, "loaf"),
-                new Product("Coffee", 5.6, "kg"),
-                new Product("Salt", 8, "kg"),
-                new Product("Water", 2.3, "l"),
-                new Product("Tea", 1.7, "packet"));
-        System.out.println(returnCode);
+        
 
         List<Product> products = syncProductDao.getAll();
         LayoutGenerator layoutGenerator = new LayoutGenerator(this.getActivity(), syncProductDao);
