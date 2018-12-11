@@ -23,6 +23,13 @@
         android:gravity="right"
         android:orientation="horizontal">
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/clear_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:src="@android:drawable/ic_menu_delete" />
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

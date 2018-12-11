@@ -46,6 +46,9 @@ public class ShoppingListFragment extends Fragment {
         listItemDao = db.listItemDao();
         syncListItemDao = new SyncListItemDao(listItemDao);
 
+        syncListItemDao.insertAll(new ListItem("one", 1, "l"));
+        syncListItemDao.insertAll(new ListItem("two", 2, "l"));
+
         List<ListItem> listItems = syncListItemDao.getAll();
         LayoutGenerator layoutGenerator = new LayoutGenerator(this.getActivity(), syncListItemDao);
 
@@ -71,6 +74,35 @@ public class ShoppingListFragment extends Fragment {
                 getFragmentManager().beginTransaction().replace(R.id.fragment, new AddItemFragment()).commit();
             }
         });
+
+        FloatingActionButton clearListButton = view.findViewById(R.id.clear_list);
+        clearListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+                alert.setTitle("Sure you want to clear this list?");
+
+                alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        List<ListItem> items = syncListItemDao.getAll();
+                        for (ListItem item : items) {
+                            syncListItemDao.delete(item);
+                            listOfListItems.removeView(listOfListItems.findViewWithTag(item.getName()));
+                        }
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+        });
+
         return view;
     }
 }

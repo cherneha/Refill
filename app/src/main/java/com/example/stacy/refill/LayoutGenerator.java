@@ -47,6 +47,7 @@ public class LayoutGenerator<T extends Item> {
         final LinearLayout block = new LinearLayout(activity.getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
+        block.setTag(1, inputName);
         if (Build.VERSION.SDK_INT > 15) {
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(12);
@@ -131,6 +132,7 @@ public class LayoutGenerator<T extends Item> {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         T edited = syncDao.findByName(inputName);
                         edited.setName(String.valueOf(input.getText()));
+                        block.setTag(1, String.valueOf(input.getText()));
                         syncDao.update(edited);
 
                         text.setText(String.valueOf(input.getText()));
