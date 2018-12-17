@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
             for (int i = 0; i < products.size(); i++) {
                 if(products.get(i).isUpdateNeeded()) {
                     System.out.println(products.get(i).getName());
-                    layoutGenerator.addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()),
+                    layoutGenerator.addBlock(products.get(i).getName(), products.get(i).getCurrentQuantity(),
                             products.get(i).getUnits(), listOfProductsToUpdate, true);
                 }
             }

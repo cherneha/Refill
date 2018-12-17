@@ -46,7 +46,7 @@ public class ListFragment extends Fragment {
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {
                 System.out.println(products.get(i).getName());
-                layoutGenerator.addBlock(products.get(i).getName(), String.valueOf(products.get(i).getCurrentQuantity()),
+                layoutGenerator.addBlock(products.get(i).getName(), products.get(i).getCurrentQuantity(),
                         products.get(i).getUnits(), listOfProducts, true);
             }
         }

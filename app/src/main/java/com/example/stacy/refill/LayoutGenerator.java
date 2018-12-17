@@ -42,7 +42,7 @@ public class LayoutGenerator<T extends Item> {
     }
 
 
-    public void addBlock(final String inputName, String productQuantity, String units, final LinearLayout listOfProducts,
+    public void addBlock(final String inputName, Double productQuantity, String units, final LinearLayout listOfProducts,
                          final boolean withRunOut) {
 
         final LinearLayout block = new LinearLayout(activity.getApplicationContext());
@@ -174,7 +174,7 @@ public class LayoutGenerator<T extends Item> {
         quantityLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         final TextView quantity = new TextView(activity.getApplicationContext());
-        quantity.setText(productQuantity);
+        quantity.setText(String.format("%.2f", productQuantity));
         quantity.setTextSize(30);
         quantity.setPadding(16, 8, 16, 0);
         quantityLayout.addView(quantity);
@@ -250,7 +250,7 @@ public class LayoutGenerator<T extends Item> {
                             edited.setUpdateNeeded(false);
                         syncDao.update(edited);
 
-                        quantity.setText(String.valueOf(newValue));
+                        quantity.setText(String.format("%.2f", newValue));
                     }
                 });
 
