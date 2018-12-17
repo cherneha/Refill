@@ -25,6 +25,7 @@ import com.example.stacy.refill.DBManager.SyncDao;
 import com.example.stacy.refill.DBManager.SyncProductDao;
 
 import java.util.Date;
+import java.util.List;
 
 public class LayoutGenerator<T extends Item> {
     private Activity activity;
@@ -32,7 +33,7 @@ public class LayoutGenerator<T extends Item> {
     //ProductDao productDao;
     SyncDao<T> syncDao;
 
-    public LayoutGenerator(Activity activity, SyncDao<T> dao){
+    public LayoutGenerator(Activity activity, SyncDao<T> dao) {
         this.activity = activity;
         //db = Database.getInstance(activity.getApplicationContext()).getAppDatabase();
         //productDao = db.productDao();
@@ -47,7 +48,7 @@ public class LayoutGenerator<T extends Item> {
         final LinearLayout block = new LinearLayout(activity.getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        block.setTag(1, inputName);
+        block.setTag(inputName);
         if (Build.VERSION.SDK_INT > 15) {
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(12);
@@ -93,9 +94,24 @@ public class LayoutGenerator<T extends Item> {
         }
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                syncDao.delete(syncDao.findByName(inputName));
-                listOfProducts.removeView(block);
-                return;
+                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+
+                alert.setTitle("Sure you want to delete this item?");
+
+                alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        syncDao.delete(syncDao.findByName(inputName));
+                        listOfProducts.removeView(block);
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
             }
         });
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(80, 80);
@@ -120,7 +136,7 @@ public class LayoutGenerator<T extends Item> {
         block.addView(nameLayout);
         editButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+                final AlertDialog.Builder alert = new AlertDialog.Builder(activity);
 
                 alert.setTitle("Rename Product");
                 alert.setMessage(inputName);
@@ -130,8 +146,13 @@ public class LayoutGenerator<T extends Item> {
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        String newName = String.valueOf(input.getText());
                         T edited = syncDao.findByName(inputName);
-                        edited.setName(String.valueOf(input.getText()));
+                        T existingItem = syncDao.findByName(newName);
+                        if (existingItem != null) {
+                            input.setError("Product with this name already exists.");
+                        }
+                        edited.setName(newName);
                         block.setTag(1, String.valueOf(input.getText()));
                         syncDao.update(edited);
 
@@ -164,7 +185,7 @@ public class LayoutGenerator<T extends Item> {
         unit.setPadding(16, 8, 16, 0);
         quantityLayout.addView(unit);
 
-        if(withRunOut) {
+        if (withRunOut) {
             final Button runOutButton = new Button(activity.getApplicationContext());
             runOutButton.setText("Run out");
             runOutButton.setTextSize(20);
@@ -176,16 +197,15 @@ public class LayoutGenerator<T extends Item> {
                     int daysFromLastUpdate = DateUtils.getTimeRemaining(runOut.getLastUpdate());
                     // we want to have days value on 100% of product
                     double daysFromLastUpdateWithQuantity = daysFromLastUpdate;
-                    if(runOut.getLastUpdateQuantity() != 0)
+                    if (runOut.getLastUpdateQuantity() != 0)
                         daysFromLastUpdateWithQuantity = daysFromLastUpdate / runOut.getLastUpdateQuantity();
 
                     Double prevEma = runOut.getAverageDays(); // it's on 100% of product
                     //int remainingDays = prevEma.intValue() - daysFromLastUpdate;
                     double newEma;
-                    if(prevEma == -1){
+                    if (prevEma == -1) {
                         newEma = daysFromLastUpdateWithQuantity;
-                    }
-                    else {
+                    } else {
                         newEma = MACalculation.Calculate(prevEma, daysFromLastUpdateWithQuantity);
                     }
                     runOut.setAverageDays(newEma);
@@ -226,7 +246,7 @@ public class LayoutGenerator<T extends Item> {
                         edited.setCurrentQuantity(newValue);
                         edited.setLastUpdateQuantity(newValue);
                         edited.setLastUpdate(new Date());
-                        if(withRunOut && !AlarmUtil.isRemainingDaysLessThanAverage((Product) edited))
+                        if (withRunOut && !AlarmUtil.isRemainingDaysLessThanAverage((Product) edited))
                             edited.setUpdateNeeded(false);
                         syncDao.update(edited);
 

@@ -46,9 +46,6 @@ public class ShoppingListFragment extends Fragment {
         listItemDao = db.listItemDao();
         syncListItemDao = new SyncListItemDao(listItemDao);
 
-        syncListItemDao.insertAll(new ListItem("one", 1, "l"));
-        syncListItemDao.insertAll(new ListItem("two", 2, "l"));
-
         List<ListItem> listItems = syncListItemDao.getAll();
         LayoutGenerator layoutGenerator = new LayoutGenerator(this.getActivity(), syncListItemDao);
 
