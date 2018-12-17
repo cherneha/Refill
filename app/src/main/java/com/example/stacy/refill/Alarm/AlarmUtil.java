@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 
+import com.example.stacy.refill.Calculation.Helper;
 import com.example.stacy.refill.Calendar.DateUtils;
 import com.example.stacy.refill.DBManager.Constants;
 import com.example.stacy.refill.Product;
@@ -45,10 +46,8 @@ public class AlarmUtil {
 
     public static boolean isRemainingDaysLessThanAverage(Product product){
         Double averageDays = product.getAverageDays();
-        Double lastAmount = product.getLastUpdateQuantity();
         if (averageDays != -1) {
-            int daysFromLastUpdate = DateUtils.getTimeRemaining(product.getLastUpdate());
-            int remainingDays = Double.valueOf(averageDays * lastAmount).intValue() - daysFromLastUpdate;
+            int remainingDays = Helper.getRemainingDays(product);
             if (remainingDays <= Constants.DaysLeastAmount)
                 return true;
         }

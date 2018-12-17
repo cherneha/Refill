@@ -12,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.stacy.refill.Calculation.Helper;
 import com.example.stacy.refill.Calendar.DateUtils;
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Constants;
@@ -60,11 +61,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 firstProduct = products.get(0).getName();
             for (Product product : products) {
                 Double averageDays = product.getAverageDays();
-                Double lastAmount = product.getLastUpdateQuantity();
 
                 if (averageDays != -1) {
-                    int daysFromLastUpdate = DateUtils.getTimeRemaining(product.getLastUpdate());
-                    double remainingProductPercent = lastAmount - (double)daysFromLastUpdate / averageDays;
+                    double remainingProductPercent = Helper.getProductAmount(product);
                     if(remainingProductPercent < 0)
                         remainingProductPercent = 0;
 

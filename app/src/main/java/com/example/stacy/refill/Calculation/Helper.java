@@ -10,12 +10,10 @@ public class Helper {
         if (averageDays != -1) {
             int daysFromLastUpdate = DateUtils.getTimeRemaining(product.getLastUpdate());
             int remainingDays = Double.valueOf(averageDays * lastAmount).intValue() - daysFromLastUpdate;
-            if(remainingDays < 1){
-                remainingDays = 1;
-            }
+
             return remainingDays;
         }
-        return 1;
+        return 0;
     }
 
     public static Double getProductAmount(Product product){
