@@ -18,6 +18,7 @@ import com.example.stacy.refill.DBManager.Constants;
 import com.example.stacy.refill.DBManager.Database;
 import com.example.stacy.refill.MainActivity;
 import com.example.stacy.refill.NotificationActions.ApproveNotification;
+import com.example.stacy.refill.NotificationActions.SnoozeNotification;
 import com.example.stacy.refill.Product;
 import com.example.stacy.refill.DBManager.ProductDao;
 import com.example.stacy.refill.R;
@@ -36,6 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        //android.os.Debug.waitForDebugger();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         AlarmUtil.setAlarm(context, pendingIntent);
         AppDatabase db = Database.getInstance(context).getAppDatabase();
@@ -77,10 +79,14 @@ public class AlarmReceiver extends BroadcastReceiver {
                     }
                     else{
                         product.setUpdateNeeded(false);
+                        // Update product current quantity
+                        product.setCurrentQuantity(remainingProductPercent);
                     }
 
                     if(product.isUpdateNeeded() && !first){
                         sendNotif(product.getName().hashCode(), context, product.getName());
+                        // Update product current quantity
+                        product.setCurrentQuantity(remainingProductPercent);
                     }
 //                    else{
 //                        product.setUpdateNeeded(false);
@@ -88,8 +94,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 //                    if(product.isUpdateNeeded()){
 //                        sendNotif(product.getName().hashCode(), pendingIntent, context, product.getName());
 //                    }
-                    // Update product current quantity
-                    product.setCurrentQuantity(remainingProductPercent);
 
                     syncProductDao.update(product);
                 }
@@ -158,7 +162,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pApproveIntent = PendingIntent.getBroadcast(context,
                 0, approveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent snoozeIntent = new Intent(context, ApproveNotification.class);
+        Intent snoozeIntent = new Intent(context, SnoozeNotification.class);
         snoozeIntent.putExtra("productName", productName);
         snoozeIntent.setAction(productName);
         PendingIntent pSnoozeIntent = PendingIntent.getBroadcast(context,
