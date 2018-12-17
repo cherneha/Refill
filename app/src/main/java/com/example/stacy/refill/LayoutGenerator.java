@@ -214,7 +214,7 @@ public class LayoutGenerator<T extends Item> {
                     runOut.setLastUpdateQuantity(0d);
                     runOut.setUpdateNeeded(true);
                     syncDao.update(runOut);
-                    quantity.setText("0.0");
+                    quantity.setText(String.format("%.2f", 0d));
                 }
             });
             nameLayout.addView(runOutButton);
