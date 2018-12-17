@@ -16,6 +16,8 @@ import com.example.stacy.refill.Calendar.DateUtils;
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Constants;
 import com.example.stacy.refill.DBManager.Database;
+import com.example.stacy.refill.MainActivity;
+import com.example.stacy.refill.NotificationActions.ApproveNotification;
 import com.example.stacy.refill.Product;
 import com.example.stacy.refill.DBManager.ProductDao;
 import com.example.stacy.refill.R;
@@ -63,15 +65,29 @@ public class AlarmReceiver extends BroadcastReceiver {
                     double remainingProductPercent = lastAmount - (double)daysFromLastUpdate / averageDays;
                     if(remainingProductPercent < 0)
                         remainingProductPercent = 0;
+
+                    boolean first = false;
                     if (AlarmUtil.isRemainingDaysLessThanAverage(product)){
-                        product.setUpdateNeeded(true);
+                        if(!product.isUpdateNeeded()){
+                            first = true;
+                            sendNotifWithActions(product.getName().hashCode(), context, product.getName());
+                        }
+                        // Hope will be set if user approve notification
+                        //product.setUpdateNeeded(true);
                     }
                     else{
                         product.setUpdateNeeded(false);
                     }
-                    if(product.isUpdateNeeded()){
-                        sendNotif(product.getName().hashCode(), pendingIntent, context, product.getName());
+
+                    if(product.isUpdateNeeded() && !first){
+                        sendNotif(product.getName().hashCode(), context, product.getName());
                     }
+//                    else{
+//                        product.setUpdateNeeded(false);
+//                    }
+//                    if(product.isUpdateNeeded()){
+//                        sendNotif(product.getName().hashCode(), pendingIntent, context, product.getName());
+//                    }
                     // Update product current quantity
                     product.setCurrentQuantity(remainingProductPercent);
 
@@ -106,33 +122,57 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setContentText("You have a new message");
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pIntent);
-        //builder.setOngoing(true);
-       // builder.setSubText("This is subtext...");   //API level 16
-        //builder.setNumber(100);
         Notification notif = builder.build();
 
         nm.notify(id, notif);
     }
 
-    void sendNotif(int id, PendingIntent pIntent, Context context, String productName) {
-        //Notification notif = new Notification(R.drawable.ic_launcher_foreground, "Notif "
-        //        + id, System.currentTimeMillis());
-        //notif.flags |= Notification.FLAG_AUTO_CANCEL;
-        //notif.setLatestEventInfo(context, "Title " + id, "Content " + id, pIntent);
+    void sendNotif(int id, Context context, String productName) {
+        Intent contentIntent = new Intent(context, MainActivity.class);
+        PendingIntent pContentIntent = PendingIntent.getActivity(context,
+                0, contentIntent , 0);
+
         Notification.Builder builder = new Notification.Builder(context);
-        //builder.setAutoCancel(false);
-        builder.setTicker("this is ticker text");
+        builder.setAutoCancel(true);
         builder.setContentTitle("Refill Notification");
         builder.setContentText("You should buy product " + productName);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pIntent);
-        //builder.setOngoing(true);
-        // builder.setSubText("This is subtext...");   //API level 16
-        //builder.setNumber(100);
+        builder.setContentIntent(pContentIntent);
         Notification notif = builder.build();
         System.out.println(id);
         System.out.println(productName);
 
+        nm.notify(id, notif);
+    }
+
+    void sendNotifWithActions(int id, Context context, String productName){
+        Notification.Builder builder = new Notification.Builder(context);
+
+        Intent contentIntent = new Intent(context, MainActivity.class);
+        PendingIntent pContentIntent = PendingIntent.getActivity(context,
+                0, contentIntent , 0);
+
+        Intent approveIntent = new Intent(context, ApproveNotification.class);
+        approveIntent.putExtra("productName", productName);
+        approveIntent.setAction(productName);
+        PendingIntent pApproveIntent = PendingIntent.getBroadcast(context,
+                0, approveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent snoozeIntent = new Intent(context, ApproveNotification.class);
+        snoozeIntent.putExtra("productName", productName);
+        snoozeIntent.setAction(productName);
+        PendingIntent pSnoozeIntent = PendingIntent.getBroadcast(context,
+                0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        builder.setContentTitle("Refill Notification");
+        builder.setContentText("You should buy product " + productName);
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setContentIntent(pContentIntent);
+        builder.setAutoCancel(false);
+        builder.addAction(android.R.drawable.ic_menu_compass, "Approve" , pApproveIntent);
+        builder.addAction(android.R.drawable.ic_menu_compass, "Snooze", pSnoozeIntent);
+
+        Notification notif = builder.build();
         nm.notify(id, notif);
     }
 }

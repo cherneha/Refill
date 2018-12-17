@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
         <receiver android:name=".Alarm.AlarmReceiver" android:process=":remote" />
+        <receiver android:name=".NotificationActions.ApproveNotification" android:process=":remote" />
+        <receiver android:name=".NotificationActions.SnoozeNotification" android:process=":remote" />
     </application>
 
 </manifest>

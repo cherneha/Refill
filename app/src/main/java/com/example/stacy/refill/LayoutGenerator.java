@@ -153,7 +153,7 @@ public class LayoutGenerator<T extends Item> {
                             input.setError("Product with this name already exists.");
                         }
                         edited.setName(newName);
-                        block.setTag(1, String.valueOf(input.getText()));
+                        block.setTag(String.valueOf(input.getText()));
                         syncDao.update(edited);
 
                         text.setText(String.valueOf(input.getText()));
