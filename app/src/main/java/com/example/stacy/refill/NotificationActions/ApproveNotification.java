@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.stacy.refill.Calculation.Helper;
 import com.example.stacy.refill.Calculation.MACalculation;
 import com.example.stacy.refill.DBManager.AppDatabase;
 import com.example.stacy.refill.DBManager.Database;
@@ -23,11 +24,13 @@ public class ApproveNotification extends BroadcastReceiver {
         SyncProductDao syncProductDao = new SyncProductDao(productDao);
 
         String productName = intent.getAction();
+        //android.os.Debug.waitForDebugger();
 
         NotificationManager nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         nm.cancel(productName.hashCode());
 
         Product product = syncProductDao.findByName(productName);
+        product.setCurrentQuantity(Helper.getProductAmount(product));
         double newMA = MACalculation.Calculate(product.getAverageDays(), Math.floor(product.getAverageDays()));
         product.setAverageDays(newMA);
         product.setUpdateNeeded(true);
