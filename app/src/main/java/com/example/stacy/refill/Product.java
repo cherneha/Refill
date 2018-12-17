@@ -39,6 +39,17 @@ public class Product extends Item{
         this.updateNeeded = false;
     }
 
+    public Product(String name, double currentQuantity, String units, Date lastUpdateDate,
+                   double averageDays, boolean updateNeeded){
+        this.name = name;
+        this.currentQuantity = currentQuantity;
+        this.lastUpdateQuantity = currentQuantity;
+        this.units = units;
+        this.lastUpdate = lastUpdateDate;
+        this.averageDays = averageDays;
+        this.updateNeeded = updateNeeded;
+    }
+
     public String getName() {
         return name;
     }

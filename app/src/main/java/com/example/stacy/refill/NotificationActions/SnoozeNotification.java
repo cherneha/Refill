@@ -24,6 +24,7 @@ public class SnoozeNotification extends BroadcastReceiver {
         AppDatabase db = Database.getInstance(context).getAppDatabase();
         ProductDao productDao = db.productDao();
         SyncProductDao syncProductDao = new SyncProductDao(productDao);
+        //android.os.Debug.waitForDebugger();
 
         String productName = intent.getAction();
 

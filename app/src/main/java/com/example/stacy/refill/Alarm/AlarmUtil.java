@@ -31,15 +31,15 @@ public class AlarmUtil {
         //check if we want to wake up tomorrow
         if (System.currentTimeMillis() > cal.getTimeInMillis()){
             // for test purpose. this row should be removed. next row should be uncommented
-            cal.setTimeInMillis(cal.getTimeInMillis()+ 5*1000);// Okay, then tomorrow ...
+            cal.setTimeInMillis(System.currentTimeMillis() + 15*1000);// Okay, then tomorrow ...
 //            cal.setTimeInMillis(cal.getTimeInMillis()+ 24*60*60*1000);// Okay, then tomorrow ...
         }
         // TODO think about wake up
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 15*1000, pendingIntent);
         }
         else{
-            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 15*1000, pendingIntent);
         }
     }
 
