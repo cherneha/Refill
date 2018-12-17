@@ -21,9 +21,9 @@ public class Database {
         final Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 12, 11);
 
-        final Date six_days_ago = new GregorianCalendar(2018 , Calendar.DECEMBER, 11).getTime();
-        final Date five_days_ago = new GregorianCalendar(2018, Calendar.DECEMBER, 12).getTime();
-        final Date seven_days_ago = new GregorianCalendar(2018, Calendar.DECEMBER, 10).getTime();
+        final Date six_days_ago = new GregorianCalendar(2018 , Calendar.DECEMBER, 12).getTime();
+        final Date five_days_ago = new GregorianCalendar(2018, Calendar.DECEMBER, 13).getTime();
+        final Date seven_days_ago = new GregorianCalendar(2018, Calendar.DECEMBER, 11).getTime();
 
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, "database")
                 .allowMainThreadQueries()
