@@ -39,10 +39,10 @@ public class SimpleEntityReadWriteTest {
 
     @Test
     public void saveData() throws Exception {
-        Product lime = new Product("Lime", 2);
+        Product lime = new Product("Lime", 2, "kg");
         productDao.insertAll(lime);
 
-        Product milk = new Product("Milk", 1);
+        Product milk = new Product("Milk", 1, "l");
         productDao.insertAll(milk);
         List<Product> products = productDao.getAll();
 
@@ -53,7 +53,7 @@ public class SimpleEntityReadWriteTest {
 
     @Test
     public void findByName() throws Exception {
-        Product lime = new Product("Lime", 2);
+        Product lime = new Product("Lime", 2, "kg");
         productDao.insertAll(lime);
 
         Product byName = productDao.findByName("Lime");
@@ -66,10 +66,10 @@ public class SimpleEntityReadWriteTest {
 
     @Test
     public void loadByIds() throws Exception {
-        Product lime = new Product("Lime", 2);
+        Product lime = new Product("Lime", 2, "kg");
         productDao.insertAll(lime);
 
-        Product milk = new Product("Milk", 1);
+        Product milk = new Product("Milk", 1, "l");
         productDao.insertAll(milk);
         List<Product> products = productDao.getAll();
         int[] ids = {1, 2};
@@ -79,11 +79,11 @@ public class SimpleEntityReadWriteTest {
 
     @Test
     public void getOrdered() throws Exception {
-        Product lime = new Product("Lime", 2);
+        Product lime = new Product("Lime", 2, "kg");
         productDao.insertAll(lime);
-        Product milk = new Product("Milk", 1);
+        Product milk = new Product("Milk", 1,"l");
         productDao.insertAll(milk);
-        Product water = new Product("Water", 4);
+        Product water = new Product("Water", 4, "l");
         productDao.insertAll(water);
 
         List<Product> products = productDao.getOrderedProducts(1);
@@ -97,7 +97,7 @@ public class SimpleEntityReadWriteTest {
 
     @Test
     public void updateProduct() throws Exception {
-        Product lime = new Product("Lime", 2);
+        Product lime = new Product("Lime", 2, "kg");
         productDao.insertAll(lime);
 
         lime = productDao.findByName("Lime");
@@ -110,11 +110,11 @@ public class SimpleEntityReadWriteTest {
 
     @Test
     public void deleteProduct() throws Exception {
-        Product lime = new Product("Lime", 2);
+        Product lime = new Product("Lime", 2, "kg");
         productDao.insertAll(lime);
-        Product milk = new Product("Milk", 1);
+        Product milk = new Product("Milk", 1, "l");
         productDao.insertAll(milk);
-        Product water = new Product("Water", 4);
+        Product water = new Product("Water", 4, "l");
         productDao.insertAll(water);
 
         milk = productDao.findByName("Milk");
